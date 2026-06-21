@@ -39,7 +39,21 @@ useEffect(() => {
       fetchDocuments(user.id)
     }
   }
+
   getUser()
+
+  // also listen for auth state changes to catch session updates
+  const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      setUserId(session.user.id)
+      setUserEmail(session.user.email || null)
+      fetchDocuments(session.user.id)
+    }
+  })
+
+  return () => {
+    authListener.subscription.unsubscribe()
+  }
 }, [])
 
   const fetchDocuments = async (uid: string) => {
