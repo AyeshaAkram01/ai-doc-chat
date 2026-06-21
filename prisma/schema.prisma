@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  createdAt DateTime   @default(now())
+  documents Document[]
+  chats     Chat[]
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  name      String
+  fileUrl   String
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  chunks    Chunk[]
+  chats     Chat[]
+}
+
+model Chunk {
+  id         String   @id @default(uuid())
+  content    String
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id])
+}
+
+model Chat {
+  id         String   @id @default(uuid())
+  question   String
+  answer     String
+  createdAt  DateTime @default(now())
+  userId     String
+  documentId String
+  user       User     @relation(fields: [userId], references: [id])
+  document   Document @relation(fields: [documentId], references: [id])
+}
