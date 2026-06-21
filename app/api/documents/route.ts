@@ -15,21 +15,17 @@ export async function POST(request: Request) {
     }
 
     // check if user exists, if not create them
-    let user = await prisma.user.findUnique({
-      where: { id: userId }
-    })
+    const { supabase } = await import('@/lib/supabase')
+const { data } = await supabase.auth.getUser()
 
-    if (!user) {
-      const { supabase } = await import('@/lib/supabase')
-      const { data } = await supabase.auth.getUser()
-      user = await prisma.user.create({
-        data: {
-          id: userId,
-          email: data.user?.email || '',
-        }
-      })
-    }
-
+await prisma.user.upsert({
+  where: { id: userId },
+  update: {},
+  create: {
+    id: userId,
+    email: data.user?.email || '',
+  }
+})
     // save document to database
     const document = await prisma.document.create({
       data: {
