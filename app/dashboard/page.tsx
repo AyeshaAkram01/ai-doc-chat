@@ -28,16 +28,19 @@ export default function DashboardPage() {
   const [asking, setAsking] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        setUserId(user.id)
-        fetchDocuments(user.id)
-      }
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+
+useEffect(() => {
+  const getUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      setUserId(user.id)
+      setUserEmail(user.email || null)
+      fetchDocuments(user.id)
     }
-    getUser()
-  }, [])
+  }
+  getUser()
+}, [])
 
   const fetchDocuments = async (uid: string) => {
     const response = await fetch(`/api/documents?userId=${uid}`)
