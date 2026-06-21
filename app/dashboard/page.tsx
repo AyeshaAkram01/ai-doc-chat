@@ -133,6 +133,7 @@ useEffect(() => {
           name: file.name,
           fileUrl: publicUrl,
           userId: userId,
+          userEmail: userEmail,
           fileText: fileText,
         }),
       })
