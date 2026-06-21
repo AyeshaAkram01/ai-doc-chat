@@ -98,10 +98,10 @@ useEffect(() => {
       return
     }
 
-    if (!userId) {
-      setError('You must be logged in to upload')
-      return
-    }
+    if (!userId || !userEmail) {
+  setError('Still loading your account info, please wait a moment and try again')
+  return
+}
 
     setUploading(true)
     setError('')
