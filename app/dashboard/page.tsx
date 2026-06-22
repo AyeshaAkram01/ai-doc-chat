@@ -139,7 +139,6 @@ useEffect(() => {
       const { data: { publicUrl } } = supabase.storage
         .from('document')
         .getPublicUrl(fileName)
-      console.log('DEBUG - About to upload with:', { userId, userEmail })
       const response = await fetch('/api/documents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
