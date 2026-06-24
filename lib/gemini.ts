@@ -12,9 +12,13 @@ export async function getEmbedding(text: string): Promise<number[]> {
 }
 
 export async function generateAnswer(question: string, context: string): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+  const models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b']
 
-  const prompt = `You are a helpful assistant answering questions based on the provided document context.
+  for (const modelName of models) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName })
+
+      const prompt = `You are a helpful assistant answering questions based on the provided document context.
 
 Context from document:
 ${context}
@@ -23,6 +27,21 @@ Question: ${question}
 
 Answer the question using only the information from the context above. If the answer isn't in the context, say "I couldn't find that information in the document."`
 
-  const result = await model.generateContent(prompt)
-  return result.response.text()
+      const result = await model.generateContent(prompt)
+      return result.response.text()
+
+    } catch (error) {
+      const isOverloaded = error instanceof Error &&
+        (error.message.includes('503') || error.message.includes('overloaded') || error.message.includes('unavailable'))
+
+      if (isOverloaded) {
+        console.log(`${modelName} overloaded, trying next model...`)
+        continue
+      }
+
+      throw error
+    }
+  }
+
+  return 'The AI service is currently busy. Please try again in a moment.'
 }
