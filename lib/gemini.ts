@@ -12,7 +12,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
 }
 
 export async function generateAnswer(question: string, context: string): Promise<string> {
-  const models = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b']
+  const models = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash-lite']
 
   for (const modelName of models) {
     try {
