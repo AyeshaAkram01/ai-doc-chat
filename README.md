@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Doc Chat
 
-## Getting Started
+A full-stack AI-powered application that lets users upload PDF documents and chat with them using natural language. Built with Next.js, Supabase, pgvector, and Google Gemini AI.
 
-First, run the development server:
+🔗 **Live Demo:** [your-app.vercel.app](https://ai-doc-chat-hkjs.vercel.app/)
 
+---
+
+## What it does
+
+- Upload any PDF document (research papers, resumes, contracts, reports)
+- AI processes the document using RAG (Retrieval-Augmented Generation)
+- Ask questions in plain English and get accurate answers based on the document content
+- Chat history is saved and loaded automatically per document
+
+---
+
+## Tech Stack
+
+**Frontend**
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+
+**Backend**
+- Next.js API Routes
+- Prisma ORM
+- PostgreSQL (Supabase)
+- pgvector (semantic search)
+
+**AI/ML**
+- Google Gemini API (embeddings + answer generation)
+- RAG pipeline (Retrieval-Augmented Generation)
+- Vector similarity search (cosine similarity)
+
+**Infrastructure**
+- Supabase (database + file storage + auth)
+- Vercel (deployment)
+
+---
+
+## How the RAG pipeline works
+
+1. User uploads a PDF
+2. Text is extracted from the PDF in the browser using pdf.js
+3. Text is split into chunks (~1000 characters each)
+4. Each chunk is converted to a 768-dimensional vector using Gemini's embedding model
+5. Vectors are stored in PostgreSQL using pgvector extension
+6. When a user asks a question, the question is also converted to a vector
+7. pgvector finds the most semantically similar chunks using cosine similarity
+8. The matching chunks + question are sent to Gemini to generate a grounded answer
+9. Answer and chat history are saved to the database
+
+---
+
+## Features
+
+- ✅ User authentication (signup/login/logout)
+- ✅ Protected routes
+- ✅ PDF upload with drag and drop
+- ✅ Real-time AI answers grounded in document content
+- ✅ Chat history persistence
+- ✅ Multiple document support
+- ✅ Automatic model fallback for API reliability
+- ✅ Fully deployed on Vercel
+
+---
+
+## Running locally
+
+1. Clone the repo
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/AyeshaAkram01/ai-doc-chat.git
+cd ai-doc-chat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Set up environment variables — create a `.env.local` file:
